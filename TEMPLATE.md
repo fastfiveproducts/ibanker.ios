@@ -1,0 +1,4 @@
+Template v0.4.3
+https://github.com/fastfiveproducts/template.ios
+Adopted from template.ios v0.4.3 @ 3ff3a65a3 on 2026-07-07 (the "Release v0.4.3" main marker; taken by the v0.4.3 upgrade, issue #24 / PR #25, landing on develop as da0cf34 during the SwiftUI-rewrite run-up to v2.0.0). template.ios has since released v0.4.4 — this file records where iBanker IS, not a target; an upgrade is separate work.
+Note: this file is the single source of truth for the app's adopted template version. Per-file "Template vX (updated)" headers are NOT advanced by an upgrade — they track each file's template.ios counterpart version (which advances only when that file changes); iBanker's newest counterpart header is v0.4.3 (AppConfig.swift). iBanker gained this file in issue #52 (2026-07-30, the fleet retrofit; Android counterpart ibanker.android#10); before that the adopted version was recorded only inline in AGENTS.md.

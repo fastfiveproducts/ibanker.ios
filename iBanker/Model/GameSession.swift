@@ -2,7 +2,7 @@
 //  GameSession.swift
 //
 //  Created by Elizabeth Maiser, Fast Five Products LLC, on 7/23/25.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/30/26.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -265,3 +265,28 @@ class GameSession: ObservableObject, DebugPrintable {
         }
     }
 }
+
+
+#if DEBUG
+// MARK: - Screenshot-Capture Support
+extension GameSession {
+    /// Screenshot-capture mode (#55): derive the Activity Log from a
+    /// pre-seeded transaction log. Capture runs seed `gamePlayers` /
+    /// `gameTransactions` through the app's own persistence (see
+    /// tools/generate-screenshots.sh), bypassing `perform(...)` — so the log
+    /// rows it would have inserted as a side effect are replayed here once,
+    /// with each transaction's own timestamp. No-ops unless the log is empty,
+    /// keeping relaunches between captures idempotent.
+    func seedActivityLogFromTransactions() {
+        guard let modelContext else { return }
+        let count = (try? modelContext.fetchCount(FetchDescriptor<ActivityLogEntry>())) ?? 0
+        guard count == 0 else { return }
+        for transaction in transactions {
+            guard let description = transaction.note
+                    ?? activityDescription(for: transaction.action, by: transaction.playerID)
+            else { continue }
+            modelContext.insert(ActivityLogEntry(description, timestamp: transaction.timestamp))
+        }
+    }
+}
+#endif

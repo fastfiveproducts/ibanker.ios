@@ -50,7 +50,7 @@ Both files are template v0.4.0 adoptions: entries are **retention-capped** (`Act
 
 ## Template Relationship
 
-This project is a child of `../template/template.ios` (Fast Five Products LLC's public AGPL template; iBanker last aligned at **v0.4.3** — check that repo's `TEMPLATE.md` for the current version). **Prefer taking files from the template wholesale** when adopting functionality, rather than reinventing it.
+This project is a child of `../template/template.ios` (Fast Five Products LLC's public AGPL template). The app's adopted template version is recorded in root [`TEMPLATE.md`](./TEMPLATE.md) — the single source of truth (#52); check the template repo's own `TEMPLATE.md` for its current version. **Prefer taking files from the template wholesale** when adopting functionality, rather than reinventing it.
 
 - Template source of truth: `../template/template.ios/` — read its `AGENTS.md`, `CONTRIBUTING.md`, and `README.md` for the full conventions, and its `CHANGELOG.md` (child-app impact per release) when upgrading.
 - The template is a Firebase/Data Connect app; **iBanker does not (yet) use Firebase**, so the template's Cloud/CloudSupport/Repositories/ViewModels layers and account/posts/contact views are deliberately not present here. Pull in template files selectively; `../template/template.ios/tools/template-compare.sh iBanker/` (run from this repo's root — the script lives in the template repo and self-resolves its template dir) categorizes files (wholesale/merge/new/app-only).
@@ -109,6 +109,7 @@ Before reporting a finding, cross-reference it against existing GitHub issues (o
 
 ## Testing
 - Manual testing only (no automated test suite). Build with the command above, then run on a simulator from Xcode.
+- App Store screenshots are generated, not hand-captured: `tools/generate-screenshots.sh` re-creates the committed `store-listing/screenshots/` sets end-to-end on the dedicated capture simulators (`ASC_69_iBanker` / `ASC_13_iBanker`, created on demand), seeding a demo game through the app's own persistence (`ScreenshotMode`, DEBUG-only) and validating exact accepted ASC dimensions + no alpha (#55).
 
 
 ## Git Workflow

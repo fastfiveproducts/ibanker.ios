@@ -13,6 +13,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B534D2612FED28BE003FD983 /* TEMPLATE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TEMPLATE.md; sourceTree = "<group>"; };
 		B546DF0D1BDBCC360006D303 /* iBanker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iBanker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B555BAFD1F4D179A00BADEF6 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		B555BAFF1F4D17C100BADEF6 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
@@ -25,7 +26,6 @@
 		B534D2572FED28BE003FD983 /* Exceptions for "iBanker" folder in "iBanker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"app-store-listing.md",
 				Info.plist,
 			);
 			target = B546DF0C1BDBCC360006D303 /* iBanker */;
@@ -39,6 +39,11 @@
 				B534D2572FED28BE003FD983 /* Exceptions for "iBanker" folder in "iBanker" target */,
 			);
 			path = iBanker;
+			sourceTree = "<group>";
+		};
+		B534D2602FED28BE003FD983 /* store-listing */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "store-listing";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -62,7 +67,9 @@
 				B555BAFF1F4D17C100BADEF6 /* README */,
 				B555BAFD1F4D179A00BADEF6 /* LICENSE */,
 				B5E15EC02FED26BB00705C99 /* LICENSE-EXCEPTIONS.md */,
+				B534D2612FED28BE003FD983 /* TEMPLATE.md */,
 				B534D2402FED28BD003FD983 /* iBanker */,
+				B534D2602FED28BE003FD983 /* store-listing */,
 				B546DF0E1BDBCC360006D303 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -105,7 +112,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 2660;
 				ORGANIZATIONNAME = "Pete Maiser";
 				TargetAttributes = {
 					B546DF0C1BDBCC360006D303 = {
@@ -276,7 +283,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -287,7 +294,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibanker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -301,7 +308,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -312,7 +319,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibanker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
