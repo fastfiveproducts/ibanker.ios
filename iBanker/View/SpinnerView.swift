@@ -2,7 +2,7 @@
 //  SpinnerView.swift
 //
 //  Created by Pete Maiser, Fast Five Products LLC, on 7/7/26.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/30/26.
 //
 //  Copyright © 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -106,6 +106,17 @@ struct SpinnerView: View {
                     Button("Done") { dismiss() }
                 }
             }
+            #if DEBUG
+            .onAppear {
+                // Screenshot-capture mode (#55): park the reel mid-prizes —
+                // window $300K/$400K/$500K with $400K centered — instead of
+                // the resting "?" rows, matching the published composition.
+                if ScreenshotMode.screen == "spinner" {
+                    reelIndex = spinnerPrizes.count + 2
+                    landedPrize = spinnerPrizes[2]
+                }
+            }
+            #endif
         }
     }
 

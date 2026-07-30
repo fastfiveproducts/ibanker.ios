@@ -4,7 +4,7 @@
 //  Template created by Pete Maiser, July 2024 through May 2025
 //  Renamed from HomeView by Pete Maiser, Fast Five Products LLC, on 10/23/25.
 //  App-specific content created by Elizabeth Maiser, Fast Five Products LLC, on 7/22/25.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/30/26.
 //
 //  Template v0.4.2 (updated) — Fast Five Products LLC's public AGPL template.
 //
@@ -47,6 +47,13 @@ struct MainTabView: View {
     // template pattern, the toolbar lives here (per-tab toolbar preferences
     // do not propagate through a TabView to the enclosing NavigationStack).
 
+    #if DEBUG
+    // Screenshot-capture mode (#55): drives the value-less player push below.
+    // Demo data is pre-seeded through the app's own persistence by
+    // tools/generate-screenshots.sh; this hook only navigates.
+    @State private var screenshotShowPlayer = false
+    #endif
+
     var body: some View {
         NavigationStack {
             TabView(selection: $selectedTabItem) {
@@ -77,6 +84,16 @@ struct MainTabView: View {
             .onChange(of: gameSession.players.isEmpty) {
                 if gameSession.players.isEmpty { editMode = .inactive }
             }
+            #if DEBUG
+            // Screenshot-capture mode (#55): a programmatic push for the
+            // player-banking capture; the stack is otherwise driven by
+            // HomeView's NavigationLinks.
+            .navigationDestination(isPresented: $screenshotShowPlayer) {
+                if let first = gameSession.players.first {
+                    PlayerView(player: first, playerIndex: 1)
+                }
+            }
+            #endif
             .navigationTitle(AppConfig.brandName)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { mainToolbar }
@@ -97,6 +114,21 @@ struct MainTabView: View {
         .task {
             gameSession.modelContext = modelContext
             ActivityLogEntry.trimToCap(in: modelContext)
+            #if DEBUG
+            // Screenshot-capture mode (#55): derive the Activity Log from the
+            // seeded transactions (after the modelContext handoff above), then
+            // select the requested screen. Inert without the launch argument.
+            if let screen = ScreenshotMode.screen {
+                gameSession.seedActivityLogFromTransactions()
+                switch screen {
+                case "player": screenshotShowPlayer = !gameSession.players.isEmpty // no blank push on an unseeded roster
+                case "activity": selectedTabItem = .activityLog
+                case "settings": selectedTabItem = .settings
+                case "spinner": showingSpinnerSheet = true
+                default: break // "roster" — the Home tab as launched
+                }
+            }
+            #endif
         }
     }
 }
