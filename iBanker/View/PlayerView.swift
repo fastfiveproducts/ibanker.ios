@@ -2,7 +2,7 @@
 //  PlayerView.swift
 //
 //  Created by Elizabeth Maiser, Fast Five Products LLC, on 7/22/25.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -48,9 +48,7 @@ struct PlayerView: View {
         Binding(
             get: { gameSession.players.first(where: { $0.id == player.id })?.imageData },
             set: { newValue in
-                if let idx = gameSession.players.firstIndex(where: { $0.id == player.id }) {
-                    gameSession.players[idx].imageData = newValue
-                }
+                gameSession.updatePlayerImage(player.id, newValue)
             }
         )
     }

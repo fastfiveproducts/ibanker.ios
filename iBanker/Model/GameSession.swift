@@ -2,7 +2,7 @@
 //  GameSession.swift
 //
 //  Created by Elizabeth Maiser, Fast Five Products LLC, on 7/23/25.
-//  Modified by Claude, Fast Five Products LLC, on 7/30/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -20,16 +20,24 @@ import SwiftUI
 import SwiftData
 
 class GameSession: ObservableObject, DebugPrintable {
-    @AppStorage("gamePlayers") private var playersData: Data = Data()
-    @AppStorage("gameTransactions") private var transactionsData: Data = Data()
-    
+    private let defaults: UserDefaults
+
     @Published var players: [Player]
     @Published var transactions: [GameTransaction]
-    
+
     /// The single shared SettingsStore (#13): created here and injected into
     /// the environment by iBankerApp, so session logic and views read the same
     /// instance. Previews may swap in their own.
-    var settings: SettingsStore = SettingsStore()
+    var settings: SettingsStore
+
+    /// Sound side effects run through this seam (default `.shared`); tests
+    /// inject a recording double. See `GameSoundPlaying`.
+    let soundPlayer: GameSoundPlaying
+
+    /// Optional ordered activity observer (default nil). Production feeds the
+    /// Activity Log via `modelContext`; this hook lets tests capture the same
+    /// human-readable strings in call order. Assignable after construction.
+    var onActivity: ((String, Date) -> Void)?
 
     // SwiftData context for the Activity Log, injected from the view layer (see
     // MainTabView). Optional because GameSession is created before the SwiftData
@@ -46,26 +54,30 @@ class GameSession: ObservableObject, DebugPrintable {
     var gameSessionID: String?
     var isSyncedGame: Bool { gameSessionID != nil }
     
-    init() {
-        // Two-phase init: 'self' (and thus the @AppStorage properties) isn't
-        // available yet, so decode via direct UserDefaults access.
-        
-        let initialPlayers = (try? JSONDecoder().decode([Player].self, from: UserDefaults.standard.data(forKey: "gamePlayers") ?? Data())) ?? []
-        
-        let initialTransactions = (try? JSONDecoder().decode([GameTransaction].self, from: UserDefaults.standard.data(forKey: "gameTransactions") ?? Data())) ?? []
-        
+    init(defaults: UserDefaults = .standard,
+         settings: SettingsStore = SettingsStore(),
+         soundPlayer: GameSoundPlaying = SoundPlayer.shared) {
+        self.defaults = defaults
+        self.settings = settings
+        self.soundPlayer = soundPlayer
+
+        // Two-phase init: 'self' isn't available yet, so decode via the
+        // injected store directly (production passes `.standard`).
+        let initialPlayers = (try? JSONDecoder().decode([Player].self, from: defaults.data(forKey: "gamePlayers") ?? Data())) ?? []
+        let initialTransactions = (try? JSONDecoder().decode([GameTransaction].self, from: defaults.data(forKey: "gameTransactions") ?? Data())) ?? []
+
         self.players = initialPlayers
         self.transactions = initialTransactions
     }
     
     func saveGame() {
         if let encodedPlayers = try? JSONEncoder().encode(players) {
-            playersData = encodedPlayers
+            defaults.set(encodedPlayers, forKey: "gamePlayers")
             debugprint("Players saved successfully!")
         }
 
         if let encodedTransactions = try? JSONEncoder().encode(transactions) {
-            transactionsData = encodedTransactions
+            defaults.set(encodedTransactions, forKey: "gameTransactions")
             debugprint("Transactions saved successfully!")
         }
     }
@@ -122,11 +134,11 @@ class GameSession: ObservableObject, DebugPrintable {
     private func playSound(for action: GameAction, by playerID: String, balanceBefore: Int) {
         switch action {
         case .addMoney, .collectSalary:
-            SoundPlayer.shared.play(.cashRegister)
+            soundPlayer.play(.cashRegister)
         case .subtractMoney:
-            SoundPlayer.shared.play(.coinDrop)
+            soundPlayer.play(.coinDrop)
         case .payPlayer:
-            SoundPlayer.shared.play(.happy)
+            soundPlayer.play(.happy)
         case .updateSalary, .resetPlayer, .createPlayer, .custom:
             break
         }
@@ -138,7 +150,7 @@ class GameSession: ObservableObject, DebugPrintable {
         case .subtractMoney, .payPlayer:
             let balanceAfter = currentState.playerBalances[playerID] ?? 0
             if balanceBefore >= 0 && balanceAfter < 0 {
-                SoundPlayer.shared.playQueued(.sad)
+                soundPlayer.playQueued(.sad)
             }
         default:
             break
@@ -151,9 +163,9 @@ class GameSession: ObservableObject, DebugPrintable {
     // SwiftData. `perform` stays the single source of truth — the log is never a
     // second source of state.
     private func logActivity(for action: GameAction, by playerID: String, at timestamp: Date, note: String?) {
-        guard let modelContext else { return }
         guard let description = note ?? activityDescription(for: action, by: playerID) else { return }
-        modelContext.insert(ActivityLogEntry(description, timestamp: timestamp))
+        onActivity?(description, timestamp)
+        modelContext?.insert(ActivityLogEntry(description, timestamp: timestamp))
     }
 
     private func playerName(for id: String) -> String {
@@ -218,6 +230,22 @@ class GameSession: ObservableObject, DebugPrintable {
         }
     }
 
+    /// Reorder the roster (drives HomeView's edit-mode `.onMove`). Out-of-range
+    /// offsets are ignored so a stale index can't trap; persistence follows the
+    /// scene-phase save, like every roster mutation.
+    func movePlayer(fromOffsets source: IndexSet, toOffset destination: Int) {
+        guard source.allSatisfy({ players.indices.contains($0) }),
+              (0...players.count).contains(destination) else { return }
+        players.move(fromOffsets: source, toOffset: destination)
+    }
+
+    /// Set or clear a player's photo (drives PlayerView's photo picker); a
+    /// no-op if the id isn't in the roster.
+    func updatePlayerImage(_ playerID: String, _ imageData: Data?) {
+        guard let idx = players.firstIndex(where: { $0.id == playerID }) else { return }
+        players[idx].imageData = imageData
+    }
+
     /// Reset every player to the given defaults. Clears the transaction log and
     /// re-seeds each player, so a reset is a genuine fresh start (and a natural
     /// compaction point) — safe because every balance is being reset anyway. The
@@ -247,8 +275,9 @@ class GameSession: ObservableObject, DebugPrintable {
     /// Append an Activity Log entry not backed by a transaction (e.g. a roster
     /// deletion marker) — presentation only, never a source of derived state.
     private func recordActivity(_ description: String) {
-        guard let modelContext else { return }
-        modelContext.insert(ActivityLogEntry(description, timestamp: Date()))
+        let timestamp = Date()
+        onActivity?(description, timestamp)
+        modelContext?.insert(ActivityLogEntry(description, timestamp: timestamp))
     }
 
     /// Record a game-mode change to the Activity Log (#32) — a settings change,

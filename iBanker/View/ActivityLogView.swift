@@ -2,8 +2,8 @@
 //  ActivityLogView.swift
 //
 //  Template file created by Elizabeth Maiser, Fast Five Products LLC, on 7/5/25.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/8/26.
-//      Template v0.4.0 (updated) — Fast Five Products LLC's public AGPL template.
+//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
+//      Template v0.4.4 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -95,10 +95,11 @@ struct ActivityLogView: View, DebugPrintable {
             }
 
             Spacer()
-            // iBanker divergence (#28): no "Clear All Logs" button — the log is
-            // the game's audit trail (one tap shouldn't erase it mid-game) and its
-            // size is already bounded by the retention cap (ActivityLogEntry.trimToCap).
-            // Upstream removal proposed as template.ios#167.
+            // No "Clear All Logs" button — the log is the game's audit trail
+            // (one tap shouldn't erase it mid-game) and its size is already
+            // bounded by the retention cap (ActivityLogEntry.trimToCap). Once an
+            // iBanker divergence (#28); template.ios#167 removed it upstream in
+            // v0.4.4, so the two now agree.
         }
         .padding()
     }

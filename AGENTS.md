@@ -7,7 +7,7 @@ iBanker is being rewritten in SwiftUI and adopts Fast Five Products LLC's public
 
 ## Build Command
 ```bash
-xcodebuild build -project iBanker.xcodeproj -scheme "default" -destination 'platform=iOS Simulator,name=iPhone 17' -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES -quiet
+xcodebuild build -project iBanker.xcodeproj -scheme "default" -destination 'platform=iOS Simulator,name=iPhone_17_iBanker' -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES -quiet
 ```
 - The active (and only) Xcode project is `iBanker.xcodeproj` (target `iBanker`, shared scheme `default` — the FFP convention, matching the template's build command; bundle id `com.maiser.ibanker`). Passing `-project iBanker.xcodeproj` is not strictly required now that the repo has a single project, but keep it explicit for clarity.
 
@@ -54,7 +54,7 @@ This project is a child of `../template/template.ios` (Fast Five Products LLC's 
 
 - Template source of truth: `../template/template.ios/` — read its `AGENTS.md`, `CONTRIBUTING.md`, and `README.md` for the full conventions, and its `CHANGELOG.md` (child-app impact per release) when upgrading.
 - The template is a Firebase/Data Connect app; **iBanker does not (yet) use Firebase**, so the template's Cloud/CloudSupport/Repositories/ViewModels layers and account/posts/contact views are deliberately not present here. Pull in template files selectively; `../template/template.ios/tools/template-compare.sh iBanker/` (run from this repo's root — the script lives in the template repo and self-resolves its template dir) categorizes files (wholesale/merge/new/app-only).
-- **Accepted divergences from the template** (recorded, not drift): folder naming (`Model/`, `ModelSupport/`, `View/`, `Store/` vs the template's `Models/`, `Views/Main|System/`, `Repositories/` — the compare script maps them via basename fallback); the app entry point (`iBankerApp` launches straight to `MainTabView` — no Firebase configure, LaunchView choreography, or overlay stack); a local `Tab` enum in `MainTabView` standing in for the template's `NavigationItem` (feature-flag driven) until cloud features are adopted; `ActivityLogView` carries no "Clear All Logs" button (#28 — the log is the game's audit trail and the retention cap bounds its size; removal proposed upstream as template.ios#167, so this divergence is expected to be temporary); app-original (`app-only`) Swift files omit the `Template vX.Y.Z` and `For licensing inquiries, contact:` header lines that template-derived files keep (see [File headers & licensing](#file-headers--licensing)).
+- **Accepted divergences from the template** (recorded, not drift): folder naming (`Model/`, `ModelSupport/`, `View/`, `Store/` vs the template's `Models/`, `Views/Main|System/`, `Repositories/` — the compare script maps them via basename fallback); the app entry point (`iBankerApp` launches straight to `MainTabView` — no Firebase configure, LaunchView choreography, or overlay stack); a local `Tab` enum in `MainTabView` standing in for the template's `NavigationItem` (feature-flag driven) until cloud features are adopted; app-original (`app-only`) Swift files omit the `Template vX.Y.Z` and `For licensing inquiries, contact:` header lines that template-derived files keep (see [File headers & licensing](#file-headers--licensing)).
 - When copying a template file, keep its structured file header and update the "Modified by" line (see below).
 
 ### File headers & licensing
@@ -108,7 +108,12 @@ Before reporting a finding, cross-reference it against existing GitHub issues (o
 
 
 ## Testing
-- Manual testing only (no automated test suite). Build with the command above, then run on a simulator from Xcode.
+- **Unit tests (`iBankerTests`, #51)** — a Swift Testing suite reverse-ported from the ibanker.android suites (the parity spec): `ModelSupport/GameStateReducerTests` (replay math), `Model/GameSessionTests` (perform guards, activity-string + sound choreography, roster ops, persistence), `Model/SerializationTests` (the event-log JSON schema iBanker persists), `Store/SettingsStoreTests` (mode/spinner coupling), and `ModelSupport/SeedRoundTripTests` (the #55 screenshot-seed round-trip). The target is a folder-synchronized `unit_test_bundle`, so a `.swift` file dropped under `iBankerTests/` auto-joins it; it was created once via `tools/add-test-target.rb` (the xcodeproj-gem recipe copied from the template — idempotent, and it keeps the test bundle out of Archive/Profile builds, where Release has no `@testable` testability).
+- **The test gate** — `xcodebuild build` does NOT run tests, so the gate is a separate step:
+  ```bash
+  xcodebuild test -project iBanker.xcodeproj -scheme "default" -destination 'platform=iOS Simulator,name=iPhone_17_iBanker'
+  ```
+  It runs on iBanker's own simulator `iPhone_17_iBanker` (create once per machine, newest installed runtime — see `../../IOS.md`); a red suite blocks a commit like a compile error. Tests reach internals via `@testable import iBanker` and use hand-rolled doubles — a `GameSoundPlaying` recorder, an `onActivity` closure, an injected `UserDefaults` suite — never the `SoundPlayer.shared` / `UserDefaults.standard` singletons. Beyond the suite, still smoke-test UI/behavior on a simulator from Xcode.
 - App Store screenshots are generated, not hand-captured: `tools/generate-screenshots.sh` re-creates the committed `store-listing/screenshots/` sets end-to-end on the dedicated capture simulators (`ASC_69_iBanker` / `ASC_13_iBanker`, created on demand), seeding a demo game through the app's own persistence (`ScreenshotMode`, DEBUG-only) and validating exact accepted ASC dimensions + no alpha (#55).
 
 
@@ -124,7 +129,7 @@ The SwiftUI rewrite (issue #11, targeting v2.0.0) lives on `develop`; it is not 
 
 **Feature flow** (off `develop`):
 1. Branch from a GitHub issue: `git checkout develop` → `git pull origin develop` → `gh issue develop <issue-number> --base develop --checkout`.
-2. Make changes → build → fix → user reviews/tests on a simulator.
+2. Make changes → build → `xcodebuild test` (a green suite is the merge gate — see Testing) → fix → user reviews/tests on a simulator.
 3. On the user's request, commit and push the feature branch.
 4. Open a PR targeting `develop`: `gh pr create --base develop`.
 5. User squash-merges the PR on GitHub; then refresh: `git checkout develop` → `git pull origin develop`.
