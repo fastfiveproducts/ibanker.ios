@@ -8,13 +8,15 @@
 
 ## App Name (30 characters max)
 
-iBanker Calculator
+iBanker for Board Games
 
-> Storefront split observed 2026-07-30 (public lookups): the US storefront
-> serves "iBanker Calculator", while other probed storefronts — CA, GB, AU
-> of the standard six, plus DE and SG — still serve "iBanker". Likely an App
-> Store Connect localization whose Name was never updated; owner to
-> confirm/normalize in the console.
+> Set to "iBanker for Board Games" (23 chars) with the 2.0.1 submission (owner
+> decision, 2026-07-31), superseding the earlier storefront split (US had
+> served "iBanker Calculator"; CA/GB/AU/DE/SG served "iBanker"). Disambiguates
+> the brand from a finance/calculator read and plants the "board games" search
+> keyword in the highest-weighted field. Fits both the App Store and Google
+> Play 30-char title limits, so it reads identically cross-platform
+> (ibanker.android). Confirm applied to all localizations in ASC.
 
 ## Subtitle (30 characters max)
 
@@ -52,7 +54,7 @@ Monopoly and The Game of Life are registered trademarks of Hasbro, Inc. Spin to 
 
 ## What's New in This Version (4000 characters max)
 
-iBanker 2.0.1 is a small polish update to the 10th Anniversary Edition:
+iBanker 2.0.1 is a small polish update to the completely-new 10th Anniversary Edition:
 
 - A crisper iBanker icon on your home screen
 - Small improvements under the hood
@@ -75,9 +77,13 @@ board game, banker, monopoly, game of life, family game, ibanker, calculator
 > commas count against the 100-char cap (see the field rule above) — consider
 > tightening to comma-only at the next listing update.
 
+## Marketing URL
+
+https://ibanker.fastfiveproducts.com/
+
 ## Support URL
 
-https://ibanker.fastfiveproducts.com
+https://ibanker.fastfiveproducts.com/support
 
 ## Privacy Policy URL
 
@@ -89,17 +95,30 @@ N/A — standard Apple EULA (local-only app: no accounts, no custom terms).
 
 ## Availability (countries/regions)
 
-Fleet distribution standard (2026-07-30): the **six English-first markets** —
-Australia, Canada, Ireland, New Zealand, United Kingdom, United States — for
-both stores. Deliberate exclusions (e.g. India, South Africa, Singapore) are a
-support-burden trade-off; do not broaden without an owner decision.
+**iBanker is a deliberate broad-distribution variant — a recorded, accepted
+deviation from the fleet standard (owner decision, 2026-07-31).** The fleet
+standard is the six English-first markets (Australia, Canada, Ireland, New
+Zealand, United Kingdom, United States) for both stores — a support-burden +
+cross-border-data hedge. That hedge largely does not apply to iBanker: it is a
+**local-only, no-backend, no-data-collection** utility, so the GDPR / UK-GDPR /
+PIPA / APPI surface is minimal (no personal-data processing), support is minimal
+(no accounts or server), the UI is number/icon-driven (English-only is a low
+barrier), and the content is 4+ and a utility, not gambling. So the broad
+footprint is a deliberate variant, not drift to clean up.
 
-Current live availability (verified 2026-07-30 via public storefront lookups;
-owner to confirm in App Store Connect): all six standard markets, **plus at
-least 17 additional storefronts** — Austria, Belgium, Czechia, Denmark,
-Finland, France, Germany, Italy, Japan, Netherlands, Norway, Portugal,
-Singapore, South Korea, Spain, Sweden, Switzerland — a deviation from the
-standard, flagged for owner cleanup in the console.
+**Revisit trigger:** this rationale is coupled to staying no-backend. If #9
+(multi-device sync) or any account/backend/networking feature lands, the
+cross-border-data burden returns — reassess the footprint (and the privacy
+manifest / policy) then. Noted on #9.
+
+Current App Store availability (owner-confirmed 2026-07-31 — **29 storefronts**):
+Australia, Austria, Belgium, Canada, Croatia, Czech Republic, Denmark, Finland,
+France, Germany, Hungary, Iceland, Ireland, Italy, Japan, Korea (Republic of),
+Luxembourg, Netherlands, New Zealand, Norway, Portugal, Singapore, Slovakia,
+Slovenia, Spain, Sweden, Switzerland, United Kingdom, United States. A superset
+of the fleet six across developed, App-Store-mature markets; excludes
+friction/emerging regimes (no China/sanctioned markets; not India/South Africa).
+Google Play (ibanker.android) to expand to match — see its alignment issue.
 
 ## Copyright
 
