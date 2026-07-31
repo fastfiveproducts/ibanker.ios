@@ -2,7 +2,7 @@
 //  SoundPlayer.swift
 //
 //  Created by Pete Maiser, Fast Five Products LLC, on 7/7/26.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
 //
 //  Copyright © 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -47,10 +47,23 @@ enum SystemSoundEffect: String {
     case shake = "shake.caf"                                // reset players
 }
 
+/// The sound side effects `GameSession` triggers, behind a seam so tests can
+/// substitute a recording double (the iOS analog of the Android port's
+/// `GameSoundPlayer` interface). `SoundPlayer` is the production conformer.
+protocol GameSoundPlaying: AnyObject {
+    func play(_ effect: SoundEffect, volume: Float)
+    func playQueued(_ effect: SoundEffect, volume: Float)
+}
+
+extension GameSoundPlaying {
+    func play(_ effect: SoundEffect) { play(effect, volume: 1.0) }
+    func playQueued(_ effect: SoundEffect) { playQueued(effect, volume: 1.0) }
+}
+
 /// Singleton audio service. Every play call is gated on the current
 /// `soundEffects` setting (read at play time via `SettingsStore`), so a
 /// disabled toggle silences the app immediately.
-final class SoundPlayer: NSObject, AVAudioPlayerDelegate, DebugPrintable {
+final class SoundPlayer: NSObject, AVAudioPlayerDelegate, DebugPrintable, GameSoundPlaying {
 
     static let shared = SoundPlayer()
 
