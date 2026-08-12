@@ -2,7 +2,7 @@
 //  GameModeSection.swift
 //
 //  Created by Pete Maiser, Fast Five Products LLC, on 7/7/26.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
 //
 //  Copyright © 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -94,7 +94,7 @@ struct GameModeSection: View {
                 get: { settings.selectedGameMode },
                 set: { newMode in
                     guard newMode != settings.selectedGameMode else { return }
-                    settings.selectedGameMode = newMode
+                    settings.setSelectedGameMode(newMode)
                     gameSession.recordGameModeChange(newMode)
                 }
             )) {
@@ -147,13 +147,6 @@ struct GameModeSection: View {
             case .salary: valueBeforeEditing = settings.customInitialSalary
             case nil: break
             }
-        }
-        .onChange(of: settings.selectedGameMode) {
-            // Reset the spinner to the mode's default on ANY mode change,
-            // including programmatic ones like Reset Settings; the Preferences
-            // toggle stays a manual override. (Logging lives on the picker binding
-            // above, not here.)
-            settings.enabledSpinner = settings.selectedGameMode.defaultSpinnerOn
         }
     }
 }

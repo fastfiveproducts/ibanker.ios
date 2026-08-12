@@ -15,12 +15,25 @@ For licensing inquiries: licenses@fastfiveproducts.com.
 ## Building
 
 ```bash
-xcodebuild build -project iBanker.xcodeproj -scheme "default" -destination 'platform=iOS Simulator,name=iPhone 17' -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES -quiet
+xcodebuild build -project iBanker.xcodeproj -scheme "default" -destination 'platform=iOS Simulator,name=iPhone_17_iBanker' -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES -quiet
 ```
 
 The shared scheme is `default` (the FFP convention). iOS 18+, SwiftUI,
-no backend. There is no automated test suite — build, then verify on a
-simulator or device.
+no backend.
+
+## Testing
+
+`xcodebuild build` does NOT run tests, so the merge gate is a separate step:
+
+```bash
+xcodebuild test -project iBanker.xcodeproj -scheme "default" -destination 'platform=iOS Simulator,name=iPhone_17_iBanker'
+```
+
+`iBankerTests` is a Swift Testing suite (#51) reverse-ported from the
+ibanker.android suites — reducer replay, GameSession guards/side-effects/
+roster/persistence, event-log JSON serialization, and SettingsStore coupling.
+A red suite blocks a commit like a compile error (see AGENTS.md → Testing).
+Beyond the suite, still verify UI/behavior on a simulator.
 
 ## Git workflow
 

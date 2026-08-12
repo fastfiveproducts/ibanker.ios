@@ -4,7 +4,7 @@
 //  Template created by Pete Maiser, July 2024 through May 2025
 //  Split from MenuView ~restored by Pete Maiser, Fast Five Products LLC, on 10/23/25.
 //  App-specific content created by Elizabeth Maiser, Fast Five Products LLC, on 7/16/25.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
 //
 //  Template v0.4.2 (updated) — Fast Five Products LLC's public AGPL template.
 //
@@ -182,7 +182,7 @@ struct HomeView: View {
                         }
                     }
                 }
-                .onMove(perform: movePlayer)
+                .onMove(perform: gameSession.movePlayer)
             }
             // editMode at the List level — TabView-level injection doesn't
             // activate a tab-hosted List (#30).
@@ -259,11 +259,6 @@ struct HomeView: View {
     private func requestDelete(_ player: Player) {
         pendingDeletePlayers = [player]
         showingDeleteConfirm = true
-    }
-
-    // Reorder players (drives edit-mode reordering).
-    private func movePlayer(from source: IndexSet, to destination: Int) {
-        gameSession.players.move(fromOffsets: source, toOffset: destination)
     }
 }
 

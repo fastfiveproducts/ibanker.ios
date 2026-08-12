@@ -12,7 +12,19 @@
 		B5E15EC12FED26BB00705C99 /* LICENSE-EXCEPTIONS.md in Resources */ = {isa = PBXBuildFile; fileRef = B5E15EC02FED26BB00705C99 /* LICENSE-EXCEPTIONS.md */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		2D45408272102A830294C622 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B546DF051BDBCC360006D303 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B546DF0C1BDBCC360006D303;
+			remoteInfo = iBanker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		935A3279D8CC6774CD910737 /* iBankerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iBankerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B534D2612FED28BE003FD983 /* TEMPLATE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TEMPLATE.md; sourceTree = "<group>"; };
 		B546DF0D1BDBCC360006D303 /* iBanker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iBanker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B555BAFD1F4D179A00BADEF6 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		B555BAFF1F4D17C100BADEF6 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
@@ -25,7 +37,6 @@
 		B534D2572FED28BE003FD983 /* Exceptions for "iBanker" folder in "iBanker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"app-store-listing.md",
 				Info.plist,
 			);
 			target = B546DF0C1BDBCC360006D303 /* iBanker */;
@@ -33,6 +44,13 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8C4E46C4802A544255B068CA /* iBankerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = iBankerTests;
+			sourceTree = "<group>";
+		};
 		B534D2402FED28BD003FD983 /* iBanker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -41,9 +59,23 @@
 			path = iBanker;
 			sourceTree = "<group>";
 		};
+		B534D2602FED28BE003FD983 /* store-listing */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = "store-listing";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		88917713992BEF5075EB2547 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B546DF0A1BDBCC360006D303 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -62,8 +94,11 @@
 				B555BAFF1F4D17C100BADEF6 /* README */,
 				B555BAFD1F4D179A00BADEF6 /* LICENSE */,
 				B5E15EC02FED26BB00705C99 /* LICENSE-EXCEPTIONS.md */,
+				B534D2612FED28BE003FD983 /* TEMPLATE.md */,
 				B534D2402FED28BD003FD983 /* iBanker */,
+				B534D2602FED28BE003FD983 /* store-listing */,
 				B546DF0E1BDBCC360006D303 /* Products */,
+				8C4E46C4802A544255B068CA /* iBankerTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				B546DF0D1BDBCC360006D303 /* iBanker.app */,
+				935A3279D8CC6774CD910737 /* iBankerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -78,6 +114,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A3617D19391CE50B5E97B5B1 /* iBankerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3057333F0F353E24E689F90 /* Build configuration list for PBXNativeTarget "iBankerTests" */;
+			buildPhases = (
+				E76E6202EE0744A063E680E8 /* Sources */,
+				88917713992BEF5075EB2547 /* Frameworks */,
+				E43ED2DB5F23EFF15D429E3A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EF194FF9C0FFA6C1B79849EF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8C4E46C4802A544255B068CA /* iBankerTests */,
+			);
+			name = iBankerTests;
+			productName = iBankerTests;
+			productReference = 935A3279D8CC6774CD910737 /* iBankerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B546DF0C1BDBCC360006D303 /* iBanker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B546DF271BDBCC360006D303 /* Build configuration list for PBXNativeTarget "iBanker" */;
@@ -105,7 +162,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 2660;
 				ORGANIZATIONNAME = "Pete Maiser";
 				TargetAttributes = {
 					B546DF0C1BDBCC360006D303 = {
@@ -128,6 +185,7 @@
 			projectRoot = "";
 			targets = (
 				B546DF0C1BDBCC360006D303 /* iBanker */,
+				A3617D19391CE50B5E97B5B1 /* iBankerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -143,6 +201,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E43ED2DB5F23EFF15D429E3A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -153,9 +218,41 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E76E6202EE0744A063E680E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		EF194FF9C0FFA6C1B79849EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = iBanker;
+			target = B546DF0C1BDBCC360006D303 /* iBanker */;
+			targetProxy = 2D45408272102A830294C622 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		16C201AEC54E56090226FB8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibankerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iBanker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iBanker";
+			};
+			name = Debug;
+		};
 		B546DF251BDBCC360006D303 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -276,7 +373,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -287,7 +384,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibanker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -301,7 +398,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -312,10 +409,27 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibanker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+		D30A0FA761DAA49039C3F825 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibankerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iBanker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iBanker";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -336,6 +450,15 @@
 			buildConfigurations = (
 				B546DF281BDBCC360006D303 /* Debug */,
 				B546DF291BDBCC360006D303 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3057333F0F353E24E689F90 /* Build configuration list for PBXNativeTarget "iBankerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D30A0FA761DAA49039C3F825 /* Release */,
+				16C201AEC54E56090226FB8D /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
