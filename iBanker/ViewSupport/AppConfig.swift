@@ -3,7 +3,7 @@
 //
 //  Template created as ViewConfig.swift by Pete Maiser, July 2024 through May 2025
 //  Renamed to AppConfig.swift by Claude, Fast Five Products LLC, on 7/6/26.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/8/26.
+//  Modified by Claude, Fast Five Products LLC, on 8/25/26.
 //      Template v0.4.3 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
@@ -42,7 +42,7 @@ struct AppConfig {
     static let privacyURL = URL(string: "https://ibanker.fastfiveproducts.com/privacy")!
 
     static let supportText = "\(brandName) Support"
-    static let supportURL = URL(string: "https://ibanker.fastfiveproducts.com/")!
+    static let supportURL = URL(string: "https://ibanker.fastfiveproducts.com/support")!
 
     // Fixed Colors
     // brandColor is iBanker's classic dark green. The rest of the pre-upgrade

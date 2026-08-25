@@ -79,15 +79,15 @@ board game, banker, monopoly, game of life, family game, ibanker, calculator
 
 ## Marketing URL
 
-https://ibanker.fastfiveproducts.com/
+`https://ibanker.fastfiveproducts.com/`
 
 ## Support URL
 
-https://ibanker.fastfiveproducts.com/support
+`https://ibanker.fastfiveproducts.com/support` (= `AppConfig.supportURL`)
 
 ## Privacy Policy URL
 
-https://ibanker.fastfiveproducts.com/privacy
+`https://ibanker.fastfiveproducts.com/privacy` (= `AppConfig.privacyURL`)
 
 ## Terms of Service (EULA) URL
 
