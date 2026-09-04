@@ -2,17 +2,16 @@
 //  ActivityLogView.swift
 //
 //  Template file created by Elizabeth Maiser, Fast Five Products LLC, on 7/5/25.
-//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
-//      Template v0.4.4 (updated) — Fast Five Products LLC's public AGPL template.
+//  Modified by Claude, Fast Five Products LLC, on 8/31/26.
+//      Template v0.5.0 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
 //  This file is part of a project licensed under the GNU Affero General Public License v3.0.
-//  See the LICENSE file at the root of this repository for full terms.
-//
 //  An exception applies: Fast Five Products LLC retains the right to use this code and
 //  derivative works in proprietary software without being subject to the AGPL terms.
-//  See LICENSE-EXCEPTIONS.md for details.
+//  See the LICENSE and LICENSE-EXCEPTIONS.md files at the root of the template repository
+//  (github.com/fastfiveproducts/template.ios) for full terms.
 //
 //  For licensing inquiries, contact: licenses@fastfiveproducts.com
 //
@@ -44,11 +43,14 @@ struct ActivityLogView: View, DebugPrintable {
                     Spacer()
                 }
                 .padding(.bottom)
+                .contentWidthCapped(.reading)   // #238 — align the title with the column below
             }
 
             ScrollView {
                 // Plain VStack, not lazy: the visible window is capped, and non-lazy layout
                 // makes bottom-anchored positioning deterministic (lazy row-height estimation breaks it)
+                // #238: capped INSIDE the ScrollView, so the scrollable keeps the
+                // full width and a drag in the side margin still scrolls
                 VStack(alignment: .leading, spacing: 0) {
                     if logEntries.isEmpty {
                         Text("No activity logged yet.")
@@ -69,12 +71,13 @@ struct ActivityLogView: View, DebugPrintable {
                         }
                     }
                 }
+                .contentWidthCapped(.reading)   // #238 — see the note above
             }
-            // Open at the bottom (newest) and follow appends while the user is there;
-            // scrolling up suspends following. Top alignment anchors separately so a
-            // log shorter than the screen reads from the top.
-            // No debounce: @Query delivers one update per SwiftData transaction, and
-            // writes are single user-action inserts (unlike DTrol's bursty stream reloads).
+            // Open at the bottom (newest) and follow appends while the user is at the bottom;
+            // scrolling up suspends following until they return. Alignment anchors top separately
+            // so a log shorter than the screen reads from the top.
+            // Note: no debounce layer — @Query delivers updates per SwiftData transaction and
+            // template writes are single user-action inserts, unlike DTrol's bursty stream reloads.
             .scrollPosition($scrollPosition)
             .defaultScrollAnchor(.top, for: .alignment)
             .defaultScrollAnchor(.bottom, for: .initialOffset)
@@ -93,13 +96,6 @@ struct ActivityLogView: View, DebugPrintable {
                     scrollPosition.scrollTo(edge: .bottom)
                 }
             }
-
-            Spacer()
-            // No "Clear All Logs" button — the log is the game's audit trail
-            // (one tap shouldn't erase it mid-game) and its size is already
-            // bounded by the retention cap (ActivityLogEntry.trimToCap). Once an
-            // iBanker divergence (#28); template.ios#167 removed it upstream in
-            // v0.4.4, so the two now agree.
         }
         .padding()
     }

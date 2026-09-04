@@ -1,24 +1,36 @@
 //
-//  validate-screenshots.swift — ASC screenshot validator/flattener (#55)
+//  validate-screenshots.swift — ASC screenshot validator/flattener
 //
-//  Created by Claude, Fast Five Products LLC, on 7/30/26.
+//  Created by Claude, Fast Five Products LLC, on 8/11/26 (template.ios#180,
+//  lifted from the recipe proven in ibanker.ios#55 and four shipped app sets).
 //
 //  Copyright © 2026 Fast Five Products LLC. All rights reserved.
 //
 //  This file is part of a project licensed under the GNU Affero General Public License v3.0.
-//  See the LICENSE file at the root of this repository for full terms.
-//
 //  An exception applies: Fast Five Products LLC retains the right to use this code and
 //  derivative works in proprietary software without being subject to the AGPL terms.
-//  See LICENSE-EXCEPTIONS.md for details.
+//  See the LICENSE and LICENSE-EXCEPTIONS.md files at the root of the template repository
+//  (github.com/fastfiveproducts/template.ios) for full terms.
+//
+//  For licensing inquiries, contact: licenses@fastfiveproducts.com
+//
+//  CONSUMER-COPYABLE: copy this file as-is; it has no app-specific content.
 //
 //  Usage: validate-screenshots <WIDTHxHEIGHT> <file.png> [...]
 //
 //  Asserts each PNG's pixel dimensions EXACTLY match the accepted App Store
-//  Connect size, and that the file carries no alpha channel (the ASC analog
-//  of the Play Store gotcha). A file captured WITH alpha is flattened in
-//  place (redrawn into an opaque RGB context on white) and re-verified.
-//  Exits non-zero on any failure so capture scripts fail loudly.
+//  Connect size, and that the file carries no alpha channel (every
+//  `simctl io screenshot` on iOS 26 emits alpha, and ASC rejects it outright).
+//  A file captured WITH alpha is flattened in place (redrawn into an opaque RGB
+//  context on white) and re-verified.  Exits non-zero on any failure so capture
+//  scripts fail loudly.
+//
+//  ⚠️ THIS PROVES DIMENSIONS AND ALPHA.  IT CANNOT PROVE CONTENT.
+//  A capture run once produced a full set of PNGs that were entirely the
+//  app's "loading data…" overlay and passed every check here — correct size,
+//  no alpha, completely useless as store assets.  A green run from this tool
+//  is necessary and NOT sufficient: always open the images before shipping
+//  them.  See the Screenshots section in AGENTS.md.
 //
 
 import Foundation

@@ -4,9 +4,11 @@
 ## User settings
 xcuserdata/
 *.xcuserstate
-
-# Add this line if you want to avoid checking in source code from the Xcode workspace
-*.xcworkspace
+# Xcode writes build/DerivedData locations here when a developer picks the
+# SHARED (rather than per-user) variant in File > Workspace Settings.  Those
+# are machine-specific paths, so this file stays out even though it lives
+# under xcshareddata/.
+WorkspaceSettings.xcsettings
 
 # Xcode build artifacts
 build/
@@ -25,9 +27,15 @@ timeline.xctimeline
 playground.xcworkspace
 
 # Swift Package Manager
-Packages/
-Package.pins
-Package.resolved
+# Dependency pins are TRACKED deliberately.  For an .xcodeproj-based app they
+# live at <project>.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved.
+# TWO rules used to hide that path, each on its own: a blanket `*.xcworkspace`,
+# and a bare `Package.resolved` — a gitignore pattern with no slash matches at
+# EVERY depth, so it was never "just the repo root".  Either one leaves fresh
+# clones resolving unpinned dependency versions with no warning, so do not
+# re-add either.  In particular, the canonical github/gitignore Swift template
+# carries `Package.resolved` as a commented-out suggestion for Swift-PACKAGE
+# repos; uncommenting it in an app repo re-hides these pins.
 .swiftpm
 
 # Firebase Connection
