@@ -3,17 +3,16 @@
 //
 //  Template created as ViewConfig.swift by Pete Maiser, July 2024 through May 2025
 //  Renamed to AppConfig.swift by Claude, Fast Five Products LLC, on 7/6/26.
-//  Modified by Claude, Fast Five Products LLC, on 8/25/26.
-//      Template v0.4.3 (updated) — Fast Five Products LLC's public AGPL template.
+//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
+//      Template v0.5.0 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
 //  This file is part of a project licensed under the GNU Affero General Public License v3.0.
-//  See the LICENSE file at the root of this repository for full terms.
-//
 //  An exception applies: Fast Five Products LLC retains the right to use this code and
 //  derivative works in proprietary software without being subject to the AGPL terms.
-//  See LICENSE-EXCEPTIONS.md for details.
+//  See the LICENSE and LICENSE-EXCEPTIONS.md files at the root of the template repository
+//  (github.com/fastfiveproducts/template.ios) for full terms.
 //
 //  For licensing inquiries, contact: licenses@fastfiveproducts.com
 //
@@ -43,6 +42,14 @@ struct AppConfig {
 
     static let supportText = "\(brandName) Support"
     static let supportURL = URL(string: "https://ibanker.fastfiveproducts.com/support")!
+
+    // App-identity footer (template #225, AppIdentityFooterView — mounted in
+    // SettingsView): the optional logo shown above the brand name, and the
+    // copyright line. The logo must be an asset-catalog IMAGE set, never the
+    // app-icon set (#234 — an app-icon set is not a lookup-able image asset).
+    static let brandLogoAssetName: String? = "iBankerLogo"
+
+    static let copyrightText = "© 2015–2026 Fast Five Products LLC"
 
     // Fixed Colors
     // brandColor is iBanker's classic dark green. The rest of the pre-upgrade
