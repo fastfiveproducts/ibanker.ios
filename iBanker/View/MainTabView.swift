@@ -4,7 +4,7 @@
 //  Template created by Pete Maiser, July 2024 through May 2025
 //  Renamed from HomeView by Pete Maiser, Fast Five Products LLC, on 10/23/25.
 //  App-specific content created by Elizabeth Maiser, Fast Five Products LLC, on 7/22/25.
-//  Modified by Claude, Fast Five Products LLC, on 7/30/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
 //
 //  Template v0.4.2 (updated) — Fast Five Products LLC's public AGPL template.
 //
@@ -33,6 +33,11 @@ struct MainTabView: View {
     @State private var showingSpinnerSheet = false
     @State private var editMode: EditMode = .inactive
 
+    // Window width, read ONCE here at the shell root (template #237) and
+    // handed to the pure seam below.  Starts at 0 = phone-shaped until the
+    // first geometry callback, the conservative default.
+    @State private var windowWidth: CGFloat = 0
+
     // MARK: - App-Specific
     // Child projects add or remove tabs for their own navigation values below,
     // and customize the mainToolbar extension. Template tabs (.home,
@@ -46,6 +51,15 @@ struct MainTabView: View {
     // template pattern, the toolbar lives here (per-tab toolbar preferences
     // do not propagate through a TabView to the enclosing NavigationStack).
 
+    // The #237 shell decision — iBanker's stand-in for the template's
+    // LaunchView.mainNavigationRootForm seam (no LaunchView here; part of the
+    // shell divergence above): the tabs take the sidebar-adaptable style only
+    // at large-format window widths, on the shared fleet tier.  Pure, pinned
+    // by MainTabViewShellTests.
+    static func usesSidebarAdaptableTabs(windowWidth: CGFloat) -> Bool {
+        windowWidth >= LayoutBreakpoint.largeFormatMinWidth
+    }
+
     #if DEBUG
     // Screenshot-capture mode (#55): drives the value-less player push below.
     // Demo data is pre-seeded through the app's own persistence by
@@ -55,21 +69,21 @@ struct MainTabView: View {
 
     var body: some View {
         NavigationStack {
-            TabView(selection: $selectedTabItem) {
-                HomeView(showingAddPlayerSheet: $showingAddPlayerSheet,
-                         editMode: $editMode)
-                    .tabItem { Label("Players", systemImage: "person.3.fill") }
-                    .tag(Tab.home)
-
-                ActivityLogView()
-                    .tabItem { Label("Activity", systemImage: "list.bullet.clipboard.fill") }
-                    .tag(Tab.activityLog)
-
-                // selectedTab binding lets the destructive reset actions return
-                // to the Players tab (#35), mirroring the editMode pattern above.
-                SettingsView(selectedTab: $selectedTabItem)
-                    .tabItem { Label("Settings", systemImage: "gear.circle.fill") }
-                    .tag(Tab.settings)
+            Group {
+                // #237: the tab style must be CONDITIONAL — .sidebarAdaptable
+                // is the framework's own large-format chrome and cannot be
+                // thresholded from inside, so applying it unconditionally
+                // would put the sidebar affordance on windows below the
+                // fleet's shared 840pt tier (LayoutBreakpoint, ViewHelpers).
+                // The tab SELECTION survives this branch swap in both
+                // directions because it lives in this struct's @State rather
+                // than inside the TabView the branch re-creates (template
+                // probe on iPad_13_Template, 2026-09-01).
+                if Self.usesSidebarAdaptableTabs(windowWidth: windowWidth) {
+                    tabContent.tabViewStyle(.sidebarAdaptable)
+                } else {
+                    tabContent
+                }
             }
             // editMode is owned here (Edit/Done button in mainToolbar) but
             // injected at the List level in HomeView — TabView-level injection
@@ -128,6 +142,32 @@ struct MainTabView: View {
                 }
             }
             #endif
+        }
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+        } action: { newValue in
+            windowWidth = newValue
+        }
+    }
+
+    // The tab list, factored so the #237 branch above can restyle it whole
+    // (the template pattern's tabContent shape).
+    private var tabContent: some View {
+        TabView(selection: $selectedTabItem) {
+            HomeView(showingAddPlayerSheet: $showingAddPlayerSheet,
+                     editMode: $editMode)
+                .tabItem { Label("Players", systemImage: "person.3.fill") }
+                .tag(Tab.home)
+
+            ActivityLogView()
+                .tabItem { Label("Activity", systemImage: "list.bullet.clipboard.fill") }
+                .tag(Tab.activityLog)
+
+            // selectedTab binding lets the destructive reset actions return
+            // to the Players tab (#35), mirroring the editMode pattern above.
+            SettingsView(selectedTab: $selectedTabItem)
+                .tabItem { Label("Settings", systemImage: "gear.circle.fill") }
+                .tag(Tab.settings)
         }
     }
 }
