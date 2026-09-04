@@ -2,7 +2,7 @@
 //  PlayerView.swift
 //
 //  Created by Elizabeth Maiser, Fast Five Products LLC, on 7/22/25.
-//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -191,6 +191,9 @@ struct PlayerView: View {
                     }
                 }
             }
+            // #238 cap before the bar attaches, so the Form caps while the
+            // keyboard action bar still spans the full pane width.
+            .contentWidthCapped(.form)
             .keyboardActionBar(focus: $focusedField) { field in
                 switch field {
                 case .salary:

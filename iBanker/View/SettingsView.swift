@@ -48,6 +48,7 @@ struct SettingsView: View {
                     Spacer()
                 }
                 .padding(.bottom)
+                .contentWidthCapped(.form)   // #238 — align the title with the Form below
             }
             Form {
                 Section("Preferences") {
@@ -119,6 +120,9 @@ struct SettingsView: View {
                         .listRowBackground(Color.clear)
                 }
             }
+            // #238 cap before the bar host attaches, so the Form caps while
+            // the published Done/Cancel bar still spans the full width.
+            .contentWidthCapped(.form)
             // Renders the Done/Cancel bar GameModeSection publishes for its
             // custom fields (#42) — a Section can't pin a bottom bar itself.
             .keyboardActionBarHost()

@@ -4,7 +4,7 @@
 //  Template created by Pete Maiser, July 2024 through May 2025
 //  Split from MenuView ~restored by Pete Maiser, Fast Five Products LLC, on 10/23/25.
 //  App-specific content created by Elizabeth Maiser, Fast Five Products LLC, on 7/16/25.
-//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
 //
 //  Template v0.4.2 (updated) — Fast Five Products LLC's public AGPL template.
 //
@@ -40,23 +40,67 @@ struct HomeView: View {
     // switch. Local since it's triggered only here.
     @State private var showingGameModeSheet = false
 
+    // Container width, read ONCE at this surface's root (#61, the template's
+    // #239 list-detail pattern — MessagesMainView is the exemplar): this leaf
+    // owns an internal list-detail split, so its question is "how wide am I?",
+    // never "how wide is the window?".  Starts at 0 = single-column until the
+    // first geometry callback, the conservative default.
+    @State private var containerWidth: CGFloat = 0
+
+    // The selected player — TWO-PANE state only (the single-column form keeps
+    // push navigation and never reads it).  Stored as the id and looked up
+    // LIVE in gameSession.players at render, so a stale id (player deleted by
+    // any path, including Settings' Delete All) resolves to the placeholder.
+    @State private var selectedPlayerID: String?
+
     // MARK: - App-Specific
     // Child projects typically replace the entire body with their own
     // home screen composition. iBanker's home screen is the player roster;
     // the enclosing NavigationStack, navigation title, and toolbar are
     // provided by MainTabView (template pattern).
 
+    /// The two-pane decision — pure, on the shared fleet tier, pinned by
+    /// HomeViewPaneLayoutTests (the #239 exemplar's container-keyed seam).
+    static func usesTwoPane(containerWidth: CGFloat) -> Bool {
+        containerWidth >= LayoutBreakpoint.largeFormatMinWidth
+    }
+
     var body: some View {
         contentView
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.width
+            } action: { newValue in
+                containerWidth = newValue
+            }
+            // One attachment covers the Edit-mode delete flow in both the
+            // single-column and two-pane forms.
+            .alert("Delete Player?", isPresented: $showingDeleteConfirm) {
+                Button("Delete", role: .destructive) {
+                    gameSession.deletePlayers(pendingDeletePlayers)
+                    pendingDeletePlayers = []
+                }
+                Button("Cancel", role: .cancel) {
+                    pendingDeletePlayers = []
+                }
+            } message: {
+                if pendingDeletePlayers.count == 1 {
+                    Text("\(pendingDeletePlayers[0].name) will be removed from the game. This can't be undone.")
+                } else {
+                    Text("The selected players will be removed from the game. This can't be undone.")
+                }
+            }
     }
-    
-    /// Determines whether to show the empty state or the list of players.
+
+    /// Determines whether to show the empty state, the two-pane split (#61),
+    /// or the single-column list of players.
     @ViewBuilder
     private var contentView: some View {
         if gameSession.players.isEmpty {
             emptyPlayersView
+        } else if Self.usesTwoPane(containerWidth: containerWidth) {
+            twoPaneView
         } else {
-            playersListView
+            playersList(twoPane: false)
         }
     }
 
@@ -124,6 +168,7 @@ struct HomeView: View {
             Spacer()
         }
         .padding()
+        .contentWidthCapped(.reading)   // #238 — text capped, backdrop below stays full-bleed
         .background(Color(.systemGroupedBackground))
         .sheet(isPresented: $showingGameModeSheet) {
             gameModeSheet
@@ -153,16 +198,54 @@ struct HomeView: View {
         }
     }
 
-    /// The view displaying the list of players.
-    private var playersListView: some View {
+    /// The #61 master-detail split (at the tier): roster pane + player detail
+    /// side by side, modeled on the template's #239 exemplar (MessagesMainView).
+    private var twoPaneView: some View {
+        HStack(spacing: 0) {
+            playersList(twoPane: true)
+                .frame(width: 360)  // the exemplar's list-pane width — twin parity
+
+            Divider()
+
+            detailPane
+                .frame(maxWidth: .infinity)
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+
+    /// The player detail pane (two-pane only).  Live lookup: the selection is
+    /// an id and the roster is the truth, so a deleted player's id — whatever
+    /// path deleted it — resolves back to the placeholder.
+    @ViewBuilder
+    private var detailPane: some View {
+        if let index = gameSession.players.firstIndex(where: { $0.id == selectedPlayerID }) {
+            PlayerView(player: gameSession.players[index], playerIndex: index + 1)
+                // Fresh identity per player: PlayerView seeds its salary field
+                // and entry state per player and assumes a fresh view.
+                .id(gameSession.players[index].id)
+        } else {
+            VStack {
+                Spacer()
+                Text("Select a player")
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+
+    /// The roster list — the whole single-column surface, and the master pane
+    /// in the split.
+    private func playersList(twoPane: Bool) -> some View {
         VStack(spacing: 0) {
             List {
                 ForEach(Array(gameSession.players.enumerated()), id: \.element.id) { index, player in
                     // In Edit mode the row shows one Delete button (unless the
                     // player has exchanged money — see hasExchangedMoney) and does
                     // not navigate; otherwise it's a tappable row that pushes
-                    // PlayerView. Reorder handles come from .onMove. One Delete tap
-                    // replaces the native minus + slide-in Delete two-step.
+                    // PlayerView — or, in the two-pane form, selects it for the
+                    // detail pane. Reorder handles come from .onMove. One Delete
+                    // tap replaces the native minus + slide-in Delete two-step.
                     if editMode.isEditing {
                         HStack {
                             playerRow(player)
@@ -174,6 +257,24 @@ struct HomeView: View {
                             }
                         }
                         .padding(.vertical, 4)
+                    } else if twoPane {
+                        // Selection, not push — a Button rather than
+                        // List(selection:), which is reliable only in a real
+                        // split-view sidebar column (the exemplar's call).
+                        Button {
+                            selectedPlayerID = player.id
+                        } label: {
+                            playerRow(player)
+                                .padding(.vertical, 4)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .listRowBackground(
+                            selectedPlayerID == player.id ? Color(.systemFill) : nil)
+                        // The fill above is visual-only — VoiceOver needs the
+                        // trait to know which player the detail pane is showing.
+                        .accessibilityAddTraits(
+                            selectedPlayerID == player.id ? .isSelected : [])
                     } else {
                         NavigationLink(destination: PlayerView(player: player, playerIndex: index + 1)) {
                             playerRow(player)
@@ -199,21 +300,6 @@ struct HomeView: View {
             }
         }
         .background(Color(.systemGroupedBackground))
-        .alert("Delete Player?", isPresented: $showingDeleteConfirm) {
-            Button("Delete", role: .destructive) {
-                gameSession.deletePlayers(pendingDeletePlayers)
-                pendingDeletePlayers = []
-            }
-            Button("Cancel", role: .cancel) {
-                pendingDeletePlayers = []
-            }
-        } message: {
-            if pendingDeletePlayers.count == 1 {
-                Text("\(pendingDeletePlayers[0].name) will be removed from the game. This can't be undone.")
-            } else {
-                Text("The selected players will be removed from the game. This can't be undone.")
-            }
-        }
     }
 
     // MARK: - Helper Functions
