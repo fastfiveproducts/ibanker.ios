@@ -3,7 +3,7 @@
 //
 //  Template created as ViewConfig.swift by Pete Maiser, July 2024 through May 2025
 //  Renamed to AppConfig.swift by Claude, Fast Five Products LLC, on 7/6/26.
-//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/5/26.
 //      Template v0.5.0 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
@@ -37,11 +37,16 @@ struct AppConfig {
 
     static let brandName = "iBanker"
 
+    // Canonical trailing-slash directory form (AGENTS.md → URL Form, template
+    // #222): both pages ARE directories serving index.html, and the slashless
+    // form costs a 301 that a store console's validator may not follow. Flipped
+    // with the matching ASC fields at the 2.0.2 submission — the mirror rule
+    // says both sides move together, never one alone.
     static let privacyText = "Privacy Policy"
-    static let privacyURL = URL(string: "https://ibanker.fastfiveproducts.com/privacy")!
+    static let privacyURL = URL(string: "https://ibanker.fastfiveproducts.com/privacy/")!
 
     static let supportText = "\(brandName) Support"
-    static let supportURL = URL(string: "https://ibanker.fastfiveproducts.com/support")!
+    static let supportURL = URL(string: "https://ibanker.fastfiveproducts.com/support/")!
 
     // App-identity footer (template #225, AppIdentityFooterView — mounted in
     // SettingsView): the optional logo shown above the brand name, and the
