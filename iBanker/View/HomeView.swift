@@ -4,7 +4,7 @@
 //  Template created by Pete Maiser, July 2024 through May 2025
 //  Split from MenuView ~restored by Pete Maiser, Fast Five Products LLC, on 10/23/25.
 //  App-specific content created by Elizabeth Maiser, Fast Five Products LLC, on 7/16/25.
-//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/5/26.
 //
 //  Template v0.4.2 (updated) — Fast Five Products LLC's public AGPL template.
 //
@@ -89,6 +89,18 @@ struct HomeView: View {
                     Text("The selected players will be removed from the game. This can't be undone.")
                 }
             }
+            #if DEBUG
+            // Screenshot-capture mode (#55): the iPad set's flagship shot IS
+            // the split, and an unselected split shows only the "Select a
+            // player" placeholder — so open on the first player. Inert without
+            // the launch argument, and the single-column form never reads
+            // selectedPlayerID, so this is iPad-only in effect.
+            .onAppear {
+                if ScreenshotMode.isActive, selectedPlayerID == nil {
+                    selectedPlayerID = gameSession.players.first?.id
+                }
+            }
+            #endif
     }
 
     /// Determines whether to show the empty state, the two-pane split (#61),

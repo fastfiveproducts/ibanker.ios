@@ -3,7 +3,7 @@
 //
 //  Template file created by Claude, Fast Five Products LLC, on 8/11/26.
 //  App-specific content created by Claude, Fast Five Products LLC, on 7/30/26 (#55, pre-template).
-//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/5/26.
 //      Template v0.4.8 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2026 Fast Five Products LLC. All rights reserved.
@@ -29,10 +29,12 @@
 //
 //  iBanker wiring (differs from the template's four Firebase-coupled points —
 //  see AGENTS.md → Testing): tools/generate-screenshots.sh seeds a demo game
-//  through the app's own persistence (make-screenshot-seed.swift), and
-//  MainTabView's launch .task reads `screen` to select the requested
-//  tab/push/sheet.  There is no test-service substitution, LaunchView
-//  injection, or ListableStore demo route here.
+//  through the app's own persistence (make-screenshot-seed.swift, the
+//  script's prepare_seed/seed_for_shot hooks), MainTabView's launch .task
+//  reads `screen` to select the requested tab/push/sheet, and HomeView opens
+//  the two-pane split on the first player so the iPad flagship shot is not a
+//  placeholder.  There is no test-service substitution, LaunchView injection,
+//  or ListableStore demo route here.
 //
 
 import Foundation
@@ -44,12 +46,12 @@ enum ScreenshotMode {
     // Child projects rename this argument to their own prefix
     // (`-ffScreenshotScreen`, `-bgScreenshotScreen`, …) and MUST keep it
     // identical to the launch argument tools/generate-screenshots.sh passes —
-    // in iBanker's #55 script that is the hardcoded `-ibScreenshotScreen`
-    // literal (three sites); the template's two-class script names it
-    // LAUNCH_ARG.  It lives here, alone and marked, so a reconcile treats it
-    // as a merge point instead of copying the template's name back over it —
-    // a silent mismatch disables every screenshot hook and still captures
-    // and validates cleanly.
+    // since the 2.0.2 store leg re-adopted the template's script, that is its
+    // single `LAUNCH_ARG` CONFIGURE value (the #55 original hardcoded the
+    // literal at three sites).  It lives here, alone and marked, so a
+    // reconcile treats it as a merge point instead of copying the template's
+    // name back over it — a silent mismatch disables every screenshot hook and
+    // still captures and validates cleanly.
     static let launchArgument = "-ibScreenshotScreen"
 
     /// The screen requested via `launchArgument`, or nil in a normal launch.
