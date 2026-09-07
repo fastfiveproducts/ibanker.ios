@@ -369,7 +369,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -394,7 +394,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

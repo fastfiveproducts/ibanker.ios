@@ -2,7 +2,7 @@
 //  GameSession.swift
 //
 //  Created by Elizabeth Maiser, Fast Five Products LLC, on 7/23/25.
-//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/7/26.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -244,6 +244,34 @@ class GameSession: ObservableObject, DebugPrintable {
     func updatePlayerImage(_ playerID: String, _ imageData: Data?) {
         guard let idx = players.firstIndex(where: { $0.id == playerID }) else { return }
         players[idx].imageData = imageData
+    }
+
+    /// Edit a player's name/token after first save (drives PlayerView's edit
+    /// sheet, #67) — a DIRECT attribute update per the photo precedent above:
+    /// identity is stored Player state, only money is derived by replaying
+    /// the log, so an identity edit stays out of the event log (shape adopted
+    /// from the Android twin, ibanker.android#22). Guards, in order: unknown
+    /// id no-ops (a Save for a player deleted out from under the detail pane
+    /// must not resurrect them), a blank name is refused here in the model so
+    /// no caller can bypass the creation rule, and an edit that changes
+    /// nothing neither saves nor logs. A RENAME appends an Activity marker
+    /// (older entries materialized the old name at write time — the marker
+    /// keeps the log readable across the change); a token-only edit stays
+    /// silent, like a photo.
+    func updatePlayerIdentity(_ playerID: String, name: String, token: String) {
+        guard let idx = players.firstIndex(where: { $0.id == playerID }) else { return }
+        let newName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let newToken = token.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !newName.isEmpty else { return }
+        let oldName = players[idx].name
+        let nameChanged = newName != oldName
+        let tokenChanged = newToken != players[idx].token
+        guard nameChanged || tokenChanged else { return }
+        players[idx].name = newName
+        players[idx].token = newToken
+        if nameChanged {
+            recordActivity("\(oldName.isEmpty ? "A player" : oldName) is now \(newName).")
+        }
     }
 
     /// Reset every player to the given defaults. Clears the transaction log and
