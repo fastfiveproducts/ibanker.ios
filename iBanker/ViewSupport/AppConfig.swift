@@ -3,7 +3,7 @@
 //
 //  Template created as ViewConfig.swift by Pete Maiser, July 2024 through May 2025
 //  Renamed to AppConfig.swift by Claude, Fast Five Products LLC, on 7/6/26.
-//  Modified by Claude, Fast Five Products LLC, on 9/5/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/7/26.
 //      Template v0.5.0 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
@@ -36,6 +36,16 @@ struct AppConfig {
     // the template when adopting those features (see AGENTS.md, Template Relationship).
 
     static let brandName = "iBanker"
+
+    // Launch linger (#66 Route B-minimal, owner-approved 2026-09-07): the
+    // system launch screen flashes past on fast devices, so an in-app frame
+    // pixel-identical to it holds and then fades — anchored to the app's
+    // FIRST RENDERED FRAME (the overlay's .task start), not to process
+    // launch. Purely visual: the overlay never hit-tests, so it costs zero
+    // interaction time. This is NOT the template's LaunchView/overlay
+    // choreography (deliberately not adopted — see AGENTS.md).
+    static let launchLingerHold: TimeInterval = 0.45   // pawn holds after first frame
+    static let launchLingerFade: TimeInterval = 0.35   // then fades out
 
     // Canonical trailing-slash directory form (AGENTS.md → URL Form, template
     // #222): both pages ARE directories serving index.html, and the slashless

@@ -2,7 +2,7 @@
 //  AddNewPlayerView.swift
 //
 //  Created by Elizabeth Maiser, Fast Five Products LLC, on 7/22/25.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/11/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/7/26.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -86,18 +86,16 @@ struct AddNewPlayerView: View {
                         Text("Balance:")
                         // The money formatter renders the committed value's $
                         // itself, replacing the old Text("$") prefix shims.
-                        TextField("Initial Balance", value: $playerBalance, formatter: NumberFormatter.money)
-                            .keyboardType(.numberPad)
-                            .autocorrectionDisabled()
-                            .focused($focusedField, equals: .balance)
+                        MoneyField("Initial Balance", value: $playerBalance,
+                                   focus: $focusedField, equals: .balance,
+                                   alignment: .leading)
                     }
 
                     HStack {
                         Text("Salary:")
-                        TextField("Initial Salary", value: $playerSalary, formatter: NumberFormatter.money)
-                            .keyboardType(.numberPad)
-                            .autocorrectionDisabled()
-                            .focused($focusedField, equals: .salary)
+                        MoneyField("Initial Salary", value: $playerSalary,
+                                   focus: $focusedField, equals: .salary,
+                                   alignment: .leading)
                     }
                 }
 

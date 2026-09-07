@@ -2,7 +2,7 @@
 //  PlayerView.swift
 //
 //  Created by Elizabeth Maiser, Fast Five Products LLC, on 7/22/25.
-//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/7/26.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -43,6 +43,9 @@ struct PlayerView: View {
     // identity.
     @State private var showingPhotoDialog = false
     @State private var isLoadingPhoto = false
+
+    // Name/Token edit sheet (#67)
+    @State private var showingEditSheet = false
 
     private var photoBinding: Binding<Data?> {
         Binding(
@@ -89,10 +92,24 @@ struct PlayerView: View {
             .accessibilityLabel("Change player photo")
             .padding(.top, 5)
 
-            Text(player.name)
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(5)
+            // Pencil beside the name (#67, the photo's camera-badge doctrine —
+            // the affordance sits on the thing it edits) opens the one-shot
+            // Name/Token edit sheet.
+            HStack(spacing: 8) {
+                Text(player.name)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Button {
+                    showingEditSheet = true
+                } label: {
+                    Image(systemName: "pencil.circle.fill")
+                        .font(.system(size: 22))
+                        .foregroundStyle(.white, Color.accentColor)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Edit name and token")
+            }
+            .padding(5)
             
             Text("Token: \(player.token)")
                 .font(.headline)
@@ -122,13 +139,14 @@ struct PlayerView: View {
 
                             Spacer()
 
-                            TextField("Enter Salary", value: $salaryInput, formatter: NumberFormatter.money)
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .keyboardType(.numberPad)
-                                .autocorrectionDisabled(true)
-                                .multilineTextAlignment(.trailing)
-                                .focused($focusedField, equals: .salary)
+                            // End-editing commit, deliberately (#68): the
+                            // onChange below live-syncs .updateSalary, so a
+                            // per-keystroke commit would spam the event log
+                            // (the #36 class). Safe because salary's bar is
+                            // closure-free (.done).
+                            MoneyField("Enter Salary", value: $salaryInput,
+                                       focus: $focusedField, equals: .salary,
+                                       commitsContinuously: false, prominent: true)
                         }
                 }
                 
@@ -143,20 +161,14 @@ struct PlayerView: View {
                     HStack {
                         Text("Add $:")
                         Spacer()
-                        TextField("Enter Amount", value: $addInput, formatter: NumberFormatter.money)
-                            .keyboardType(.numberPad)
-                            .autocorrectionDisabled(true)
-                            .multilineTextAlignment(.trailing)
-                            .focused($focusedField, equals: .add)
+                        MoneyField("Enter Amount", value: $addInput,
+                                   focus: $focusedField, equals: .add)
                     }
                     HStack {
                         Text("Subtract $:")
                         Spacer()
-                        TextField("Enter Amount", value: $subtractInput, formatter: NumberFormatter.money)
-                            .keyboardType(.numberPad)
-                            .autocorrectionDisabled(true)
-                            .multilineTextAlignment(.trailing)
-                            .focused($focusedField, equals: .subtract)
+                        MoneyField("Enter Amount", value: $subtractInput,
+                                   focus: $focusedField, equals: .subtract)
                     }
                     // Player-first send (#42): pick the recipient, focus jumps
                     // to the amount, and the bar's Send completes it.
@@ -182,11 +194,8 @@ struct PlayerView: View {
                         // reads as the amount for the pick above. VoiceOver
                         // still gets a distinct name (the visible label this
                         // replaced).
-                        TextField("Enter Amount", value: $sendInput, formatter: NumberFormatter.money)
-                            .keyboardType(.numberPad)
-                            .autocorrectionDisabled(true)
-                            .multilineTextAlignment(.trailing)
-                            .focused($focusedField, equals: .send)
+                        MoneyField("Enter Amount", value: $sendInput,
+                                   focus: $focusedField, equals: .send)
                             .accessibilityLabel("Send amount")
                     }
                 }
@@ -239,6 +248,10 @@ struct PlayerView: View {
         .playerPhotoPicker(isPresented: $showingPhotoDialog,
                            imageData: photoBinding,
                            isLoading: $isLoadingPhoto)
+        // Name/Token edit sheet (#67; see EditPlayerView.swift)
+        .sheet(isPresented: $showingEditSheet) {
+            EditPlayerView(player: player)
+        }
         .onAppear {
             // Seed the salary field from the stored salary (the reducer seeds
             // every roster player, so the 0 fallback is unreachable here).

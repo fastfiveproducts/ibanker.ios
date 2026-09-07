@@ -2,6 +2,7 @@
 //  GameSessionTests.swift
 //
 //  Created by Claude, Fast Five Products LLC, on 7/31/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/7/26.
 //      Reverse-ported from ibanker.android GameSessionTest.kt (#51): locks
 //      GameSession's guards (incl. the #36 no-op updateSalary guard and the #38
 //      self-pay / negative-salary / negative-reset guards), the side-effect
@@ -327,6 +328,62 @@ struct GameSessionTests {
 
         session.updatePlayerImage("alice", nil)
         #expect(session.players.first { $0.id == "alice" }?.imageData == nil)
+    }
+
+    @Test func updatePlayerIdentityRenamesAndRecordsMarker() {
+        // #67 (shape shared with ibanker.android#22): rename logs a marker —
+        // older entries materialized the old name at write time, the marker
+        // keeps the log readable across the change.
+        let (store, suite) = makeStore(); defer { store.removePersistentDomain(forName: suite) }
+        let session = makeSessionWithRoster(store)
+        let before = events.events.count
+
+        session.updatePlayerIdentity("alice", name: "Alexandra", token: "dog")
+        #expect(session.players.first { $0.id == "alice" }?.name == "Alexandra")
+        #expect(events.events.count == before + 1)
+        #expect(events.events.last == "Alice is now Alexandra.")
+        #expect(session.transactions.count == 3) // identity is never an event
+    }
+
+    @Test func updatePlayerIdentityTokenOnlyEditStaysSilent() {
+        // A token (like a photo) is named in no log entry — no marker.
+        let (store, suite) = makeStore(); defer { store.removePersistentDomain(forName: suite) }
+        let session = makeSessionWithRoster(store)
+        let before = events.events.count
+
+        session.updatePlayerIdentity("alice", name: "Alice", token: "thimble")
+        #expect(session.players.first { $0.id == "alice" }?.token == "thimble")
+        #expect(events.events.count == before)
+    }
+
+    @Test func updatePlayerIdentityTrimsInputs() {
+        let (store, suite) = makeStore(); defer { store.removePersistentDomain(forName: suite) }
+        let session = makeSessionWithRoster(store)
+
+        session.updatePlayerIdentity("alice", name: "  Alexandra ", token: " cat ")
+        let alice = session.players.first { $0.id == "alice" }
+        #expect(alice?.name == "Alexandra")
+        #expect(alice?.token == "cat")
+    }
+
+    @Test func updatePlayerIdentityGuards() {
+        // In the twin's order: unknown id no-ops (the split-pane
+        // delete-out-from-under class — a Save must not resurrect a deleted
+        // player), a blank name is refused in the model, and a no-change edit
+        // neither saves nor logs.
+        let (store, suite) = makeStore(); defer { store.removePersistentDomain(forName: suite) }
+        let session = makeSessionWithRoster(store)
+        let before = events.events.count
+
+        session.updatePlayerIdentity("ghost", name: "Ghost", token: "boo")
+        #expect(session.players.count == 3)
+        #expect(!session.players.contains { $0.id == "ghost" })
+
+        session.updatePlayerIdentity("alice", name: "   ", token: "dog")
+        #expect(session.players.first { $0.id == "alice" }?.name == "Alice")
+
+        session.updatePlayerIdentity("alice", name: "Alice", token: "dog")
+        #expect(events.events.count == before)
     }
 
     @Test func movePlayerIgnoresOutOfRangeIndices() {

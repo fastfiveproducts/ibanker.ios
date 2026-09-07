@@ -31,7 +31,12 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>iBanker uses your photo library to choose a photo for a player.</string>
 	<key>UILaunchScreen</key>
-	<dict/>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackdrop</string>
+		<key>UIImageName</key>
+		<string>iBankerLaunchLogo</string>
+	</dict>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

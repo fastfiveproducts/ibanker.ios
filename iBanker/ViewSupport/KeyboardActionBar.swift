@@ -2,7 +2,7 @@
 //  KeyboardActionBar.swift
 //
 //  Created by Claude, Fast Five Products LLC, on 7/9/26.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/10/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/7/26.
 //
 //  Copyright © 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -34,9 +34,9 @@ struct KeyboardAction {
 }
 
 /// A contextual action bar pinned above the keyboard — one-tap
-/// Add/Subtract/Send with Cancel, or plain Done (#35/#42). #6's K/M/000
-/// shortcut buttons would extend this same bar (between Cancel and the
-/// Spacer).
+/// Add/Subtract/Send with Cancel, or plain Done (#35/#42). (#6's K/M keys
+/// were once sketched as bar buttons here; they landed as KEYS on the iPad
+/// money pad instead — see MoneyField.swift. The bar itself is unchanged.)
 ///
 /// This is a `safeAreaInset(edge: .bottom)` bar gated on the screen's
 /// focused field — deliberately NOT a `.toolbar(placement: .keyboard)`
