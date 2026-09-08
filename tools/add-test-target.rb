@@ -9,15 +9,18 @@
 #  Copyright © 2026 Fast Five Products LLC. All rights reserved.
 #
 #  This file is part of a project licensed under the GNU Affero General Public
-#  License v3.0. See the LICENSE file at the root of this repository for full
-#  terms. An exception applies: Fast Five Products LLC retains the right to use
-#  this code and derivative works in proprietary software without being subject
-#  to the AGPL terms. See LICENSE-EXCEPTIONS.md for details.
+#  License v3.0. An exception applies: Fast Five Products LLC retains the right
+#  to use this code and derivative works in proprietary software without being
+#  subject to the AGPL terms. See the LICENSE and LICENSE-EXCEPTIONS.md files at
+#  the root of the template repository (github.com/fastfiveproducts/template.ios)
+#  for full terms.
+#
+#  For licensing inquiries, contact: licenses@fastfiveproducts.com
 #
 # One-time creation of the unit-test target for a folder-synchronized Xcode
 # project (the fleet's project shape: PBXFileSystemSynchronizedRootGroup,
 # objectVersion 77), scripted so no Xcode GUI session is needed.  Validated
-# on template.ios with the xcodeproj gem 1.27.0 (Template v0.4.6).
+# on template.ios with the xcodeproj gem 1.27.0.
 #
 # What it does (the Xcode "File > New > Target > Unit Testing Bundle" analog):
 #   1. Creates a unit-test-bundle target "<AppTarget>Tests" hosted in the

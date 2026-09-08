@@ -46,8 +46,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8C4E46C4802A544255B068CA /* iBankerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = iBankerTests;
 			sourceTree = "<group>";
 		};
@@ -61,8 +59,6 @@
 		};
 		B534D2602FED28BE003FD983 /* store-listing */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = "store-listing";
 			sourceTree = "<group>";
 		};
@@ -373,7 +369,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -384,7 +380,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibanker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -398,7 +394,7 @@
 				CLANG_CXX_LIBRARY = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iBanker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -409,7 +405,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maiser.ibanker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

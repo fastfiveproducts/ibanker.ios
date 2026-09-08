@@ -2,18 +2,16 @@
 //  SettingsView.swift
 //
 //  Template file created by Elizabeth Maiser, Fast Five Products LLC, on 7/4/25.
-//  Modified by Pete Maiser, Fast Five Products LLC, on 7/12/26.
-//
-//  Template v0.3.0 (updated) — Fast Five Products LLC's public AGPL template.
+//  Modified by Claude, Fast Five Products LLC, on 9/4/26.
+//      Template v0.5.0 (updated) — Fast Five Products LLC's public AGPL template.
 //
 //  Copyright © 2025, 2026 Fast Five Products LLC. All rights reserved.
 //
 //  This file is part of a project licensed under the GNU Affero General Public License v3.0.
-//  See the LICENSE file at the root of this repository for full terms.
-//
 //  An exception applies: Fast Five Products LLC retains the right to use this code and
 //  derivative works in proprietary software without being subject to the AGPL terms.
-//  See LICENSE-EXCEPTIONS.md for details.
+//  See the LICENSE and LICENSE-EXCEPTIONS.md files at the root of the template repository
+//  (github.com/fastfiveproducts/template.ios) for full terms.
 //
 //  For licensing inquiries, contact: licenses@fastfiveproducts.com
 //
@@ -50,6 +48,7 @@ struct SettingsView: View {
                     Spacer()
                 }
                 .padding(.bottom)
+                .contentWidthCapped(.form)   // #238 — align the title with the Form below
             }
             Form {
                 Section("Preferences") {
@@ -112,8 +111,18 @@ struct SettingsView: View {
                     Text("Every player will be removed and the game reset. The Activity Log is kept. This can't be undone.")
                 }
 
-                aboutSection
+                // App-identity footer (template #225): logo, brand name,
+                // version (build), support/privacy links, copyright — all
+                // AppConfig-driven. Replaced the bespoke aboutSection at the
+                // v0.5.0 reconcile (#62).
+                Section {
+                    AppIdentityFooterView()
+                        .listRowBackground(Color.clear)
+                }
             }
+            // #238 cap before the bar host attaches, so the Form caps while
+            // the published Done/Cancel bar still spans the full width.
+            .contentWidthCapped(.form)
             // Renders the Done/Cancel bar GameModeSection publishes for its
             // custom fields (#42) — a Section can't pin a bottom bar itself.
             .keyboardActionBarHost()
@@ -131,49 +140,6 @@ struct SettingsView: View {
         SoundPlayer.shared.playSystemSound(.shake)
     }
 
-    /// About footer (pattern adopted from DTrol's SettingsView): the app's
-    /// logo, brand name, version, support and privacy links, and copyright.
-    private var aboutSection: some View {
-        Section {
-            VStack(spacing: 6) {
-                Image("iBankerLogo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 64, height: 64)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                    .accessibilityHidden(true)
-                Text(AppConfig.brandName)
-                    .font(.headline)
-                Text("Version \(Self.appVersion)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Link(AppConfig.supportText, destination: AppConfig.supportURL)
-                    .font(.caption)
-                Link(AppConfig.privacyText, destination: AppConfig.privacyURL)
-                    .font(.caption)
-                Text("© 2015–2026 Fast Five Products LLC")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
-            .listRowBackground(Color.clear)
-            // Two links share this row: without .borderless a Form row forwards
-            // a tap ANYWHERE in the row to its first control, so taps on the
-            // logo — or on Privacy Policy — would all open the support URL
-            // (lesson learned in DTrol). Borderless gives each link its own
-            // discrete hit area.
-            .buttonStyle(.borderless)
-        }
-    }
-
-    /// e.g. "2.0.0 (2)" — marketing version and build, from the bundle.
-    private static var appVersion: String {
-        let info = Bundle.main.infoDictionary
-        let version = info?["CFBundleShortVersionString"] as? String ?? "—"
-        let build = info?["CFBundleVersion"] as? String ?? "—"
-        return "\(version) (\(build))"
-    }
 }
 
 

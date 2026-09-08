@@ -2,7 +2,7 @@
 //  GameModeSection.swift
 //
 //  Created by Pete Maiser, Fast Five Products LLC, on 7/7/26.
-//  Modified by Claude, Fast Five Products LLC, on 7/31/26.
+//  Modified by Claude, Fast Five Products LLC, on 9/7/26.
 //
 //  Copyright © 2026 Fast Five Products LLC. All rights reserved.
 //
@@ -36,10 +36,11 @@ struct GameModeSection: View {
     @FocusState private var focusedField: Field?
 
     // The stored value when a field gained focus — what the bar's Cancel
-    // restores (#42). The fields write through to @AppStorage on
-    // end-editing commit, so Cancel resigns focus (letting that commit fire)
-    // and then puts this snapshot back. One snapshot suffices: only the
-    // focused field can be cancelled, and moving focus re-snapshots.
+    // restores (#42). The fields write through to @AppStorage as typed
+    // (MoneyField's continuous commit, #68 — chosen so the iPad field's
+    // late end-editing can never overwrite the restore), so Cancel resigns
+    // focus and then puts this snapshot back. One snapshot suffices: only
+    // the focused field can be cancelled, and moving focus re-snapshots.
     @State private var valueBeforeEditing: Int = 0
 
     // The custom values are stored as non-optional Ints (0 = unset), but the
@@ -62,8 +63,8 @@ struct GameModeSection: View {
         )
     }
 
-    // The bar for the focused field: Done commits (write-through, via the
-    // end-editing commit); Cancel restores the snapshot. The id encodes
+    // The bar for the focused field: Done just dismisses (the value is
+    // already written through); Cancel restores the snapshot. The id encodes
     // everything the closures capture (field + snapshot), per the
     // preference's staleness contract.
     private var barPreference: KeyboardActionBarPreference? {
@@ -108,20 +109,14 @@ struct GameModeSection: View {
                 HStack {
                     Text("Default Balance")
                     Spacer()
-                    TextField("Initial Balance", value: customBalanceBinding, formatter: NumberFormatter.money)
-                        .keyboardType(.numberPad)
-                        .autocorrectionDisabled()
-                        .multilineTextAlignment(.trailing)
-                        .focused($focusedField, equals: .balance)
+                    MoneyField("Initial Balance", value: customBalanceBinding,
+                               focus: $focusedField, equals: .balance)
                 }
                 HStack {
                     Text("Default Salary")
                     Spacer()
-                    TextField("Initial Salary", value: customSalaryBinding, formatter: NumberFormatter.money)
-                        .keyboardType(.numberPad)
-                        .autocorrectionDisabled()
-                        .multilineTextAlignment(.trailing)
-                        .focused($focusedField, equals: .salary)
+                    MoneyField("Initial Salary", value: customSalaryBinding,
+                               focus: $focusedField, equals: .salary)
                 }
             } else {
                 // Display the default values for the selected non-custom mode
